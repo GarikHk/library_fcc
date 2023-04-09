@@ -10,11 +10,29 @@ const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
 const server = require('../server');
+const Book = require('../schemas/Book.js');
 
 chai.use(chaiHttp);
 
 suite('Functional Tests', function() {
+  let testBook;
 
+  this.beforeEach(async () => {
+    testBook = await Book.create({
+      title: 'Test title',
+      commentcount: '3',
+      comments: [
+        'Comment 1',
+        'Comment 2',
+        'Comment 3'
+      ],
+    });
+  });
+
+  this.afterEach(async () => {
+    await Book.findByIdAndDelete(testBook._id);
+  });
+  
   /*
   * ----[EXAMPLE TEST]----
   * Each test should completely test the response of the API end-point including response status code!
